@@ -4,13 +4,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:todo_app/blocs/login/login_bloc.dart';
 import 'package:todo_app/repository/user_repository.dart';
+import 'package:todo_app/screens/home_screen/home_screen.dart';
+import 'package:todo_app/screens/signup_screen/signup_screen.dart';
 import 'package:todo_app/services/auth.dart';
 import 'package:todo_app/utils/mixins.dart';
 import 'package:todo_app/widgets/formfield.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
-
+  static const route = '/login';
   @override
   State<LoginScreen> createState() => _LoginScreenState();
 }
@@ -29,7 +31,21 @@ class _LoginScreenState extends State<LoginScreen> with InputValidators {
   @override
   Widget build(BuildContext context) {
     final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-    return BlocBuilder<LoginBloc, LoginState>(
+    return BlocConsumer<LoginBloc, LoginState>(
+      listenWhen: (previous, current) =>
+          current.error != '' || current.status == true,
+      listener: ((context, state) {
+        if (state.error != '') {
+          final snackbar = SnackBar(
+            content: Text("${state.error}"),
+            backgroundColor: Colors.red,
+            duration: Duration(seconds: 2),
+          );
+          ScaffoldMessenger.of(context).showSnackBar(snackbar);
+        } else {
+          Navigator.of(context).pushNamed(HomeScreen.route);
+        }
+      }),
       builder: (context, state) {
         return Scaffold(
           body: SingleChildScrollView(
@@ -112,23 +128,29 @@ class _LoginScreenState extends State<LoginScreen> with InputValidators {
                                     );
                               }
                             },
-                            child: Container(
-                              height: 45,
-                              width: double.infinity,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(20),
-                                color: Colors.green,
-                              ),
-                              child: const Center(
-                                child: Text(
-                                  "Login",
-                                  style: TextStyle(
-                                      fontSize: 24,
-                                      fontWeight: FontWeight.w600,
-                                      color: Colors.white),
-                                ),
-                              ),
-                            ),
+                            child: state.isLoading!
+                                ? const Center(
+                                    child: CircularProgressIndicator(
+                                      color: Colors.green,
+                                    ),
+                                  )
+                                : Container(
+                                    height: 45,
+                                    width: double.infinity,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(20),
+                                      color: Colors.green,
+                                    ),
+                                    child: const Center(
+                                      child: Text(
+                                        "Login",
+                                        style: TextStyle(
+                                            fontSize: 24,
+                                            fontWeight: FontWeight.w600,
+                                            color: Colors.white),
+                                      ),
+                                    ),
+                                  ),
                           ),
                           const SizedBox(
                             height: 20,
@@ -142,7 +164,8 @@ class _LoginScreenState extends State<LoginScreen> with InputValidators {
                               ),
                               GestureDetector(
                                 onTap: () {
-                                  //TODO: navigate to signup screen
+                                  Navigator.of(context)
+                                      .pushNamed(SignUpScreen.route);
                                 },
                                 child: const Text(
                                   "Signup",

@@ -1,11 +1,11 @@
 part of 'login_bloc.dart';
 
 class LoginState {
-  final UserRepository? userRepository;
+  final bool? status;
   final bool? isLoading;
   final String? error;
   LoginState({
-    this.userRepository,
+    this.status,
     this.isLoading,
     this.error,
   });
@@ -15,18 +15,18 @@ class LoginState {
     if (identical(this, other)) return true;
 
     return other is LoginState &&
-        other.userRepository == userRepository &&
+        other.status == status &&
         other.isLoading == isLoading &&
         other.error == error;
   }
 
   LoginState copyWith({
-    UserRepository? userRepository,
+    bool? status,
     bool? isLoading,
     String? error,
   }) {
     return LoginState(
-      userRepository: userRepository ?? this.userRepository,
+      status: status ?? this.status,
       isLoading: isLoading ?? this.isLoading,
       error: error ?? this.error,
     );
@@ -34,9 +34,9 @@ class LoginState {
 
   @override
   int get hashCode =>
-      userRepository.hashCode ^ isLoading.hashCode ^ error.hashCode;
+      status.hashCode ^ isLoading.hashCode ^ error.hashCode;
 
   @override
   String toString() =>
-      'LoginState(userRepository: $userRepository, isLoading: $isLoading, error: $error)';
+      'LoginState(status: $status, isLoading: $isLoading, error: $error)';
 }

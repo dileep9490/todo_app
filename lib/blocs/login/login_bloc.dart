@@ -11,7 +11,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   LoginBloc({
     required UserRepository repository,
   })  : _userRepository = repository,
-        super(LoginState(isLoading: false)) {
+        super(LoginState(isLoading: false, error: '', status: false)) {
     on<LoginEventStarted>(_onLoginEventStarted);
   }
 
@@ -19,15 +19,18 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 
   Future<void> _onLoginEventStarted(
       LoginEventStarted event, Emitter<LoginState> emit) async {
-    emit(state.copyWith(isLoading: true));
-    final Authservice = AuthService();
+    emit(state.copyWith(isLoading: true,error: ''));
+    final AuthService authservice = AuthService();
+
     String? apiKey;
     try {
-      apiKey = await Authservice.loginService(
+      apiKey = await authservice.loginService(
           email: event.email, password: event.password);
-      print(apiKey);
+
+      _userRepository.copyWith(apiKey: apiKey);
+      emit(state.copyWith(status: true, isLoading: false));
     } on CredentialsIncorrect {
-      print("Incorrect creds");
+      emit(state.copyWith(error: "Incorrect Credentials", isLoading: false));
     }
   }
 }

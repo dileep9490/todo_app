@@ -20,4 +20,20 @@ class AuthService {
       return apiKey;
     }
   }
+
+  Future<bool?> singUpService(
+      {required email, required username, required password}) async {
+    var url = Uri.parse('${baseUrl}auth/signup');
+    var response = await http.post(url, body: {
+      "email": email,
+      "username": username,
+      "password": password,
+    });
+    if (response.statusCode == 201) {
+      return true;
+    } else {
+      String message = jsonDecode(response.body)["error"];
+      throw InternalServerError(error: message);
+    }
+  }
 }

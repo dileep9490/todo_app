@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:todo_app/blocs/signup/signup_bloc.dart';
 import 'package:todo_app/repository/user_repository.dart';
 import 'package:todo_app/screens/home_screen/home_screen.dart';
 import 'package:todo_app/screens/login_screen/login_screen.dart';
@@ -19,13 +20,16 @@ class MyApp extends StatelessWidget {
         initialRoute: LoginScreen.route,
         routes: {
           HomeScreen.route: (context) => const HomeScreen(),
-          LoginScreen.route: (context) =>  BlocProvider(
+          LoginScreen.route: (context) => BlocProvider(
                 create: (context) => LoginBloc(
-            repository: context.read<UserRepository>(),
-          ),
-                child:const LoginScreen(),
+                  repository: context.read<UserRepository>(),
+                ),
+                child: const LoginScreen(),
               ),
-          SignUpScreen.route: (context) => const SignUpScreen(),
+          SignUpScreen.route: (context) => BlocProvider(
+                create: (context) => SignupBloc(),
+                child: const SignUpScreen(),
+              ),
         },
       ),
     );

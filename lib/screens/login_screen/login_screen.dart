@@ -29,6 +29,13 @@ class _LoginScreenState extends State<LoginScreen> with InputValidators {
   }
 
   @override
+  void dispose() {
+    emailController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
     return BlocConsumer<LoginBloc, LoginState>(

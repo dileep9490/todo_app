@@ -29,6 +29,15 @@ class _SignUpScreenState extends State<SignUpScreen> with InputValidators {
   }
 
   @override
+  void dispose() {
+    emailController.dispose();
+    passwordController.dispose();
+    confirmpasswordController.dispose();
+    userNameController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final GlobalKey<FormState> signupFormKey = GlobalKey<FormState>();
     return BlocConsumer<SignupBloc, SignUpState>(
